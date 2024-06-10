@@ -16,7 +16,7 @@ The map of prefix values to label values. This should be a JSON string. Default 
 
 ```yaml
 - name: PR Labeler
-  uses: your-github-username/your-repository-name@v1
+  uses: JKBeeman92/conventional-commit-labeler@v1.0.0
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
     label_map: '{"feat": "Feature", "fix": "Bugfix", "docs": "Documentation"}'
