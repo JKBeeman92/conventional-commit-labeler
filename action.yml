@@ -1,0 +1,13 @@
+name: 'PR Labeler'
+description: 'Adds a label to the PR based on the title'
+inputs:
+  token:
+    description: 'The GITHUB_TOKEN secret'
+    required: true
+  label_map:
+    description: 'The map of prefix values to label values'
+    required: false
+    default: '{"feat": "Feature", "fix": "Bugfix", "docs": "Documentation"}'
+runs:
+  using: 'node20'
+  main: 'index.js'
