@@ -1,4 +1,4 @@
-name: 'PR Labeler'
+name: 'PR Conventional Commit Labeler'
 description: 'Adds a label to the PR based on the title'
 author: 'JKBeeman92'
 branding:
