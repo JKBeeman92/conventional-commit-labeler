@@ -1,5 +1,9 @@
 name: 'PR Labeler'
 description: 'Adds a label to the PR based on the title'
+author: 'JKBeeman92'
+branding:
+  icon: 'git-commit'
+  color: 'green'
 inputs:
   token:
     description: 'The GITHUB_TOKEN secret'
