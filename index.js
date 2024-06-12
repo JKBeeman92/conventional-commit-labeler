@@ -27,7 +27,7 @@ async function run() {
         // Check the PR title for a key from the label map
         for (const key in label_map) {
             // Create a regular expression to match the key followed by a parenthesis with a random number of characters and a colon
-            const regex = new RegExp(`^${key}\\(.*\\):`);
+            const regex = new RegExp(`^${key}\\(?.*\\)?:`);
 
             if (regex.test(pr_title)) {
                 const label = label_map[key];
