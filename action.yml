@@ -1,5 +1,5 @@
 name: 'PR Conventional Commit Labeler'
-description: 'Adds a label to the PR based on the title'
+description: 'Automatically labels PRs based on their conventional commit title. Supports multi-label, stale-label removal, and auto-creating missing labels.'
 author: 'JKBeeman92'
 branding:
   icon: 'git-commit'
@@ -9,9 +9,17 @@ inputs:
     description: 'The GITHUB_TOKEN secret'
     required: true
   label_map:
-    description: 'The map of prefix values to label values'
+    description: |
+      Optional JSON object that overrides or extends the built-in default label map.
+      The defaults already cover all standard conventional commit types:
+        feat, fix, docs, chore, refactor, test, style, ci, perf, build, revert
+      Pass only the keys you want to change — the rest of the defaults remain active.
+      Examples:
+        Override one label:   '{"feat": "Enhancement"}'
+        Add a custom type:    '{"security": "Security Fix"}'
+        Full replacement:     '{"feat": "Feature", "fix": "Bugfix"}' (only these two active)
     required: false
-    default: '{"feat": "Feature", "fix": "Bugfix", "docs": "Documentation"}'
+    default: '{}'
 runs:
   using: 'node20'
   main: 'index.js'
