@@ -1,7 +1,7 @@
 {
   "name": "pr-labeler",
-  "version": "1.0.0",
-  "description": "A GitHub Action that adds a label to the PR based on the title",
+  "version": "2.0.0",
+  "description": "A GitHub Action that labels PRs based on their conventional commit title",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,10 +12,11 @@
   },
   "keywords": [
     "github-action",
-    "pr-labeler"
+    "pr-labeler",
+    "conventional-commits"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "JKBeeman92",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/JKBeeman92/conventional-commit-labeler/issues"
   },
