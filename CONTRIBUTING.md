@@ -31,6 +31,10 @@ type!: breaking change
 
 Supported types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `style`, `ci`, `perf`, `build`, `revert`.
 
+This is enforced, not just requested: the **PR Title Lint** check (`.github/workflows/pr-title-lint.yml`) fails any PR whose title doesn't parse as a Conventional Commit. Both breaking-change forms are accepted — `type!(scope):` (this action's own matching syntax) and `type(scope)!:` (the spec's documented form).
+
+Individual commits within a PR aren't linted — PRs here merge via squash, so only the PR title ends up in `main`'s history and is what release-please and this action's own labeler actually read.
+
 ## Versioning
 
 This project follows [Semantic Versioning](https://semver.org/), derived mechanically from Conventional Commit types on `develop → main` release PRs:

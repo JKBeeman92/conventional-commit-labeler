@@ -51,6 +51,10 @@ test('matchLabels matches a breaking-change marker with a scope', () => {
   assert.deepEqual(matchLabels(DEFAULT_LABEL_MAP, 'feat!(api): remove v1 endpoints'), ['Feature']);
 });
 
+test('matchLabels matches the Conventional Commits spec form: bang after scope', () => {
+  assert.deepEqual(matchLabels(DEFAULT_LABEL_MAP, 'feat(api)!: remove v1 endpoints'), ['Feature']);
+});
+
 test('matchLabels is case-insensitive', () => {
   assert.deepEqual(matchLabels(DEFAULT_LABEL_MAP, 'FEAT: shout about it'), ['Feature']);
 });
