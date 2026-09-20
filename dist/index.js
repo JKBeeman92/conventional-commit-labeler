@@ -39,12 +39,13 @@ function buildLabelMap(labelMapInput) {
 }
 
 // Determines which labels a PR title matches.
-// Supports: type: ..., type(scope): ..., type!: ..., type!(scope): ...
+// Supports: type: ..., type(scope): ..., type!: ..., type!(scope): ...,
+// and the Conventional Commits spec's own type(scope)!: breaking-change form.
 // Matching is case-insensitive.
 function matchLabels(labelMap, prTitle) {
   const labelsToApply = [];
   for (const [key, label] of Object.entries(labelMap)) {
-    const pattern = new RegExp(`^${key}!?(\\([^)]*\\))?:.*$`, 'i');
+    const pattern = new RegExp(`^${key}!?(\\([^)]*\\))?!?:.*$`, 'i');
     if (pattern.test(prTitle)) {
       labelsToApply.push(label);
     }
