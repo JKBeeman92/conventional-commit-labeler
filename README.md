@@ -105,6 +105,16 @@ type!(scope): breaking change with scope
 - `feat!: redesign API` → **Feature**
 - `docs: update README` → **Documentation**
 
+## Development
+
+```bash
+npm ci
+npm test          # runs index.test.js via node --test
+npm run build     # regenerates dist/index.js (required after any index.js change — commit the result)
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the branching model, versioning policy, and release process.
+
 ## Migrating from v1
 
 - The `token` and `label_map` inputs are unchanged.

@@ -1,0 +1,25 @@
+name: Promote develop to main
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Open promotion PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "chore: promote develop to main" \
+            --body "Automated promotion of \`develop\` into \`main\` ahead of a release. Merge to let release-please pick up the accumulated commits." \
+            || echo "A promotion PR already exists (or there is nothing to promote)."
