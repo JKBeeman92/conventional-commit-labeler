@@ -1,6 +1,6 @@
 {
   "name": "pr-labeler",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A GitHub Action that labels PRs based on their conventional commit title",
   "main": "index.js",
   "scripts": {
