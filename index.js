@@ -17,29 +17,55 @@ const DEFAULT_LABEL_MAP = {
   revert:   'Revert'
 };
 
+// Parses the user-supplied label_map input and merges it with the built-in
+// defaults. An empty / omitted input means "use all defaults as-is". Throws
+// on invalid JSON or a non-object payload.
+function buildLabelMap(labelMapInput) {
+  let userLabelMap = {};
+  if (labelMapInput && labelMapInput.trim() !== '' && labelMapInput.trim() !== '{}') {
+    const parsed = JSON.parse(labelMapInput);
+    if (typeof parsed !== 'object' || Array.isArray(parsed) || parsed === null) {
+      throw new TypeError('label_map must be a JSON object (e.g. {"feat": "Feature"})');
+    }
+    userLabelMap = parsed;
+  }
+  return { ...DEFAULT_LABEL_MAP, ...userLabelMap };
+}
+
+// Determines which labels a PR title matches.
+// Supports: type: ..., type(scope): ..., type!: ..., type!(scope): ...
+// Matching is case-insensitive.
+function matchLabels(labelMap, prTitle) {
+  const labelsToApply = [];
+  for (const [key, label] of Object.entries(labelMap)) {
+    const pattern = new RegExp(`^${key}!?(\\([^)]*\\))?:.*$`, 'i');
+    if (pattern.test(prTitle)) {
+      labelsToApply.push(label);
+    }
+  }
+  return labelsToApply;
+}
+
+// Labels this action manages that are on the PR but no longer match the title.
+function computeStaleLabels(existingLabelNames, labelMap, labelsToApply) {
+  const allMappedLabels = Object.values(labelMap);
+  return existingLabelNames.filter(
+    name => allMappedLabels.includes(name) && !labelsToApply.includes(name)
+  );
+}
+
 async function run() {
   try {
     const token = core.getInput('token', { required: true });
     const labelMapInput = core.getInput('label_map');
 
-    // Parse the user-supplied label_map and merge it with the built-in defaults.
-    // An empty / omitted label_map means "use all defaults as-is".
-    let userLabelMap = {};
-    if (labelMapInput && labelMapInput.trim() !== '' && labelMapInput.trim() !== '{}') {
-      try {
-        const parsed = JSON.parse(labelMapInput);
-        if (typeof parsed !== 'object' || Array.isArray(parsed) || parsed === null) {
-          throw new TypeError('label_map must be a JSON object (e.g. {"feat": "Feature"})');
-        }
-        userLabelMap = parsed;
-      } catch (e) {
-        core.setFailed(`Invalid label_map JSON: ${e.message}`);
-        return;
-      }
+    let labelMap;
+    try {
+      labelMap = buildLabelMap(labelMapInput);
+    } catch (e) {
+      core.setFailed(`Invalid label_map JSON: ${e.message}`);
+      return;
     }
-
-    // Merge defaults first, then user overrides on top.
-    const labelMap = { ...DEFAULT_LABEL_MAP, ...userLabelMap };
     core.debug(`Effective label map: ${JSON.stringify(labelMap)}`);
 
     const octokit = github.getOctokit(token);
@@ -59,26 +85,11 @@ async function run() {
     const existingLabelNames = pullRequest.labels.map(l => l.name);
     core.debug(`Existing labels on PR: ${existingLabelNames.join(', ') || 'none'}`);
 
-    // All label values managed by this action (used for stale-label detection).
-    const allMappedLabels = Object.values(labelMap);
-
-    // Determine which labels the current title matches.
-    // Supports: type: ..., type(scope): ..., type!: ..., type!(scope): ...
-    // Matching is case-insensitive.
-    const labelsToApply = [];
-    for (const [key, label] of Object.entries(labelMap)) {
-      const pattern = new RegExp(`^${key}!?(\\([^)]*\\))?:.*$`, 'i');
-      if (pattern.test(prTitle)) {
-        core.debug(`"${key}" matched → label "${label}"`);
-        labelsToApply.push(label);
-      }
-    }
+    const labelsToApply = matchLabels(labelMap, prTitle);
     core.info(`Labels to apply: ${labelsToApply.join(', ') || 'none'}`);
 
     // Remove stale labels: labels this action manages that no longer match.
-    const staleLabels = existingLabelNames.filter(
-      name => allMappedLabels.includes(name) && !labelsToApply.includes(name)
-    );
+    const staleLabels = computeStaleLabels(existingLabelNames, labelMap, labelsToApply);
     for (const name of staleLabels) {
       core.info(`Removing stale label: "${name}"`);
       await octokit.rest.issues.removeLabel({
@@ -128,4 +139,8 @@ async function run() {
   }
 }
 
-run();
+if (require.main === module) {
+  run();
+}
+
+module.exports = { DEFAULT_LABEL_MAP, buildLabelMap, matchLabels, computeStaleLabels, run };
