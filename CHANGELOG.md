@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/JKBeeman92/conventional-commit-labeler/compare/pr-labeler-v3.0.0...pr-labeler-v3.0.1) (2026-09-20)
+
+
+### Bug Fixes
+
+* accept spec's type(scope)!: breaking-change form; enforce PR title lint in CI ([#10](https://github.com/JKBeeman92/conventional-commit-labeler/issues/10)) ([46499b2](https://github.com/JKBeeman92/conventional-commit-labeler/commit/46499b2b3f8f0fb9d8638412c6bcb09df90c42bc))
+
 ## [3.0.0](https://github.com/JKBeeman92/conventional-commit-labeler/compare/pr-labeler-v2.0.0...pr-labeler-v3.0.0) (2026-09-20)
 
 
